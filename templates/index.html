@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Performance Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            font-family: 'Roboto', sans-serif;
+            color: #fff;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            margin-top: 20px;
+            color: #333;
+        }
+        h1 {
+            color: #1e3c72;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        .form-label {
+            font-weight: 500;
+            color: #2a5298;
+        }
+        .form-control, .form-select {
+            border-radius: 10px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db, #2a5298);
+            border: none;
+            padding: 12px 40px;
+            font-size: 18px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2980b9, #1e3c72);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        .visualization-section {
+            margin-top: 50px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .visualization-section h2 {
+            color: #1e3c72;
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .chart-img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .chart-img:hover {
+            transform: scale(1.05);
+        }
+        .prediction-result {
+            margin-top: 40px;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .prediction-result.low { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .prediction-result.moderate { background: linear-gradient(135deg, #f1c40f, #e67e22); }
+        .prediction-result.high { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+        .prediction-score {
+            font-size: 3em;
+            font-weight: 700;
+            color: #fff;
+        }
+        .insights-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #fff;
+        }
+        .insights-section h3 {
+            color: #fff;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        .insights-section ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .insights-section li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Employee Performance Dashboard</h1>
+        <form method="POST">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="name" class="form-label">Employee Name</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="age" class="form-label">Age</label>
+                    <input type="number" class="form-control" id="age" name="age" min="18" max="70" value="32" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="gender" class="form-label">Gender</label>
+                    <select class="form-select" id="gender" name="gender" required>
+                        {% for gender in genders %}
+                            <option value="{{ gender }}">{{ gender }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="education_background" class="form-label">Education Background</label>
+                    <select class="form-select" id="education_background" name="education_background" required>
+                        {% for edu in edu_backgrounds %}
+                            <option value="{{ edu }}">{{ edu }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="marital_status" class="form-label">Marital Status</label>
+                    <select class="form-select" id="marital_status" name="marital_status" required>
+                        {% for status in marital_statuses %}
+                            <option value="{{ status }}">{{ status }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="department" class="form-label">Department</label>
+                    <select class="form-select" id="department" name="department" required>
+                        {% for dept in departments %}
+                            <option value="{{ dept }}">{{ dept }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="job_role" class="form-label">Job Role</label>
+                    <select class="form-select" id="job_role" name="job_role" required>
+                        {% for role in job_roles %}
+                            <option value="{{ role }}">{{ role }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="travel_frequency" class="form-label">Travel Frequency</label>
+                    <select class="form-select" id="travel_frequency" name="travel_frequency" required>
+                        {% for freq in travel_frequencies %}
+                            <option value="{{ freq }}">{{ freq }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="distance_from_home" class="form-label">Distance From Home (miles)</label>
+                    <input type="number" class="form-control" id="distance_from_home" name="distance_from_home" min="1" max="50" value="10" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="education_level" class="form-label">Education Level (1-5)</label>
+                    <input type="number" class="form-control" id="education_level" name="education_level" min="1" max="5" value="3" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="environment_satisfaction" class="form-label">Environment Satisfaction (1-4)</label>
+                    <input type="number" class="form-control" id="environment_satisfaction" name="environment_satisfaction" min="1" max="4" value="3" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="hourly_rate" class="form-label">Hourly Rate</label>
+                    <input type="number" class="form-control" id="hourly_rate" name="hourly_rate" min="30" max="100" value="50" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="job_involvement" class="form-label">Job Involvement (1-4)</label>
+                    <input type="number" class="form-control" id="job_involvement" name="job_involvement" min="1" max="4" value="3" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="job_level" class="form-label">Job Level (1-5)</label>
+                    <input type="number" class="form-control" id="job_level" name="job_level" min="1" max="5" value="2" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="job_satisfaction" class="form-label">Job Satisfaction (1-4)</label>
+                    <input type="number" class="form-control" id="job_satisfaction" name="job_satisfaction" min="1" max="4" value="3" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="num_companies_worked" class="form-label">Number of Companies Worked</label>
+                    <input type="number" class="form-control" id="num_companies_worked" name="num_companies_worked" min="0" max="10" value="1" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="overtime" class="form-label">OverTime</label>
+                    <select class="form-select" id="overtime" name="overtime" required>
+                        {% for option in overtime_options %}
+                            <option value="{{ option }}">{{ option }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="last_salary_hike_percent" class="form-label">Last Salary Hike (%)</label>
+                    <input type="number" class="form-control" id="last_salary_hike_percent" name="last_salary_hike_percent" min="0" max="25" value="10" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="relationship_satisfaction" class="form-label">Relationship Satisfaction (1-4)</label>
+                    <input type="number" class="form-control" id="relationship_satisfaction" name="relationship_satisfaction" min="1" max="4" value="3" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="total_work_experience" class="form-label">Total Work Experience (years)</label>
+                    <input type="number" class="form-control" id="total_work_experience" name="total_work_experience" min="0" max="40" value="10" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="training_times_last_year" class="form-label">Training Times Last Year</label>
+                    <input type="number" class="form-control" id="training_times_last_year" name="training_times_last_year" min="0" max="6" value="2" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="work_life_balance" class="form-label">Work-Life Balance (1-4)</label>
+                    <input type="number" class="form-control" id="work_life_balance" name="work_life_balance" min="1" max="4" value="3" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="years_at_company" class="form-label">Years at Company</label>
+                    <input type="number" class="form-control" id="years_at_company" name="years_at_company" min="0" max="40" value="5" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="years_in_current_role" class="form-label">Years in Current Role</label>
+                    <input type="number" class="form-control" id="years_in_current_role" name="years_in_current_role" min="0" max="20" value="3" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="years_since_last_promotion" class="form-label">Years Since Last Promotion</label>
+                    <input type="number" class="form-control" id="years_since_last_promotion" name="years_since_last_promotion" min="0" max="15" value="1" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="years_with_curr_manager" class="form-label">Years with Current Manager</label>
+                    <input type="number" class="form-control" id="years_with_curr_manager" name="years_with_curr_manager" min="0" max="20" value="3" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="attrition" class="form-label">Attrition</label>
+                    <select class="form-select" id="attrition" name="attrition" required>
+                        {% for option in attrition_options %}
+                            <option value="{{ option }}">{{ option }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="model" class="form-label">Select Model</label>
+                    <select class="form-select" id="model" name="model" required>
+                        {% for option in model_options %}
+                            <option value="{{ option }}">{{ option }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="text-center mt-5">
+                <button type="submit" class="btn btn-primary">Analyze & Predict</button>
+            </div>
+        </form>
+
+        {% if charts %}
+            <div class="visualization-section">
+                <h2>{{ name.replace('_', ' ') }}'s Performance Insights (Model: {{ selected_model }})</h2>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <img src="{{ url_for('static', filename=charts.bar.split('static/')[1]) }}" class="chart-img" alt="Key Metrics">
+                    </div>
+                    <div class="col-md-6">
+                        <img src="{{ url_for('static', filename=charts.satisfaction.split('static/')[1]) }}" class="chart-img" alt="Satisfaction Metrics">
+                    </div>
+                    <div class="col-md-6">
+                        <img src="{{ url_for('static', filename=charts.gauge.split('static/')[1]) }}" class="chart-img" alt="Performance Score">
+                    </div>
+                    <div class="col-md-6">
+                        <img src="{{ url_for('static', filename=charts.line.split('static/')[1]) }}" class="chart-img" alt="Experience Timeline">
+                    </div>
+                    <div class="col-md-6">
+                        <img src="{{ url_for('static', filename=charts.categorical.split('static/')[1]) }}" class="chart-img" alt="Categorical Breakdown">
+                    </div>
+                    <div class="col-md-6">
+                        <img src="{{ url_for('static', filename=charts.comparison.split('static/')[1]) }}" class="chart-img" alt="Performance Comparison">
+                    </div>
+                    <div class="col-md-6">
+                        <img src="{{ url_for('static', filename=feature_img) }}" class="chart-img" alt="Feature Correlation">
+                    </div>
+                    <div class="col-md-6">
+                        <img src="{{ url_for('static', filename=dist_img) }}" class="chart-img" alt="Performance Distribution">
+                    </div>
+                </div>
+                {% if prediction %}
+                    <div class="prediction-result {{ insights.level|lower }}">
+                        <div class="prediction-score">{{ prediction|int }}</div>
+                        <p>Predicted Performance Rating for <strong>{{ name.replace('_', ' ') }}</strong> / 100 (Model: {{ selected_model }})</p>
+                    </div>
+                    <div class="insights-section">
+                        <h3>Performance Summary</h3>
+                        <p>This {{ insights.level }} performance rating ({{ prediction|int }}/100) reflects your overall contribution based on experience, satisfaction, and job factors.</p>
+                        <h3>Top Strengths</h3>
+                        <ul>
+                            {% for strength in insights.strengths %}
+                                <li>{{ strength }}</li>
+                            {% endfor %}
+                        </ul>
+                        <h3>Key Weaknesses</h3>
+                        <ul>
+                            {% for weakness in insights.weaknesses %}
+                                <li>{{ weakness }}</li>
+                            {% endfor %}
+                        </ul>
+                        <h3>Benchmarking</h3>
+                        <p>{{ insights.comparison }}</p>
+                        <h3>Recommendations</h3>
+                        <ul>
+                            {% for rec in insights.recommendations %}
+                                <li>{{ rec }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
