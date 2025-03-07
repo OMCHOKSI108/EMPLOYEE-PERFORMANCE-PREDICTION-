@@ -1,7 +1,24 @@
-xgboost==2.1.1          # Specific version to avoid compatibility issues
-flask==3.0.3            # For web serving (if applicable)
-gunicorn==22.0.0        # Production WSGI server
-pandas==2.2.1           # For data handling
-numpy==1.26.4           # Numerical operations
- 
-python-dotenv==1.0.1    # For environment variables
+flask==3.0.3
+django==5.0.3
+fastapi==0.110.0
+requests==2.31.0
+gunicorn==22.0.0
+uvicorn==0.29.0
+pandas==2.2.1
+numpy==1.26.4
+scipy==1.12.0
+matplotlib==3.8.3
+seaborn==0.13.2
+jupyter==1.0.0
+xgboost==2.1.1
+beautifulsoup4==4.12.3
+pillow==10.2.0
+pyyaml==6.0.1
+python-dotenv==1.0.1
+sqlalchemy==2.0.28
+psycopg2-binary==2.9.9
+pymongo==4.6.2
+pytest==8.1.1
+coverage==7.4.4
+tqdm==4.66.2
+aiohttp==3.9.3
