@@ -1,7 +1,4 @@
-Below is a `README.md` file tailored for your **Employee Performance Prediction** project. It includes instructions for setup, running the training script and Flask app, and an overview of the project, based on the provided `train_data.py` and `app.py` files.
-
----
-
+ 
 # Employee Performance Prediction
 
 This project predicts employee performance ratings using machine learning models (Random Forest and XGBoost) based on various employee attributes. The application provides a Flask-based web interface to input employee details and visualize performance predictions with charts and insights.
