@@ -27,27 +27,6 @@ EMPLOYEE-PERFORMANCE-PREDICTION-/
 ├── INX_Future_Inc_Employee_Performance_CDS_Project2_Data_V1.8.csv  # Dataset
 └── README.md             # This file
 ```
-## Project Structure
-```
-EMPLOYEE-PERFORMANCE-PREDICTION-/
-├── train_data.py          # Script to train and save models
-├── app.py                # Flask app for predictions and visualization
-├── backend/              # Directory for trained models and artifacts
-│   ├── model_RF.pkl
-│   ├── model_xg.pkl
-│   ├── feature_scaler.pkl
-│   ├── target_scaler.pkl
-│   ├── mappings.pkl
-│   └── feature_names.pkl
-├── static/               # Directory for static files and charts
-│   ├── charts/          # Generated charts (created at runtime)
-│   ├── feature_correlation.png
-│   └── performance_distribution.png
-├── templates/            # Directory for HTML templates
-│   └── index.html
-├── INX_Future_Inc_Employee_Performance_CDS_Project2_Data_V1.8.csv  # Dataset
-└── README.md             # This file
-```
 
 ## Prerequisites
 - Python 3.8+
