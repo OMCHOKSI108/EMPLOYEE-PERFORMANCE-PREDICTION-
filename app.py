@@ -9,7 +9,7 @@ matplotlib.use('Agg')
 
 app = Flask(__name__)
 
-# Load models and preprocessing artifacts with error handling
+ 
 try:
     model_xg = pickle.load(open('backend/model_xg.pkl', 'rb'))  # XGBoost model
     model_rf = pickle.load(open('backend/model_RF.pkl', 'rb'))  # Random Forest model
@@ -35,6 +35,10 @@ OVERTIME_OPTIONS = list(mappings['OverTime'].keys())
 ATTRITION_OPTIONS = list(mappings['Attrition'].keys())
 MODEL_OPTIONS = ['XGBoost', 'Random Forest']
 
+
+
+#first chart left
+
 def generate_bar_chart(data_dict, employee_name):
     plt.figure(figsize=(10, 6), facecolor='#f7f7f7')
     keys = ['Age', 'DistanceFromHome', 'EmpHourlyRate', 'TotalWorkExperienceInYears']
@@ -54,25 +58,56 @@ def generate_bar_chart(data_dict, employee_name):
     plt.close()
     return filepath
 
+ 
+
+
+
 def generate_satisfaction_bar_chart(data_dict, employee_name):
-    plt.figure(figsize=(10, 6), facecolor='#f7f7f7')
-    keys = ['EmpJobSatisfaction', 'EnvSatisfaction', 'WorkLifeBalance', 'RelationshipSatisfaction']
-    values = [float(data_dict.get(k, 0)) for k in keys]
-    bars = plt.barh(keys, values, color='#17becf', edgecolor='black', linewidth=1.2)
-    plt.title(f'{employee_name} - Satisfaction Metrics', fontsize=18, fontweight='bold', pad=20)
-    plt.xlabel('Score (1-4)', fontsize=14)
-    plt.xlim(0, 4)
-    plt.yticks(fontsize=12)
-    plt.grid(axis='x', linestyle='--', alpha=0.5)
-    for bar in bars:
-        width = bar.get_width()
-        plt.text(width + 0.1, bar.get_y() + bar.get_height()/2, f"{width:.1f}", va='center', ha='left', fontsize=10)
-    plt.tight_layout()
-    filepath = f'static/charts/{employee_name}/satisfaction_bar_chart.png'
-    os.makedirs(os.path.dirname(filepath), exist_ok=True)
-    plt.savefig(filepath, dpi=300, bbox_inches='tight')
-    plt.close()
-    return filepath
+    try:
+        
+        keys = ['EmpJobSatisfaction', 'EmpEnvironmentSatisfaction', 'EmpWorkLifeBalance', 'EmpRelationshipSatisfaction']
+        
+        display_labels = ['Job Satisfaction', 'Environment Satisfaction', 'Work-Life Balance', 'Relationship Satisfaction']
+        
+       
+        values = []
+        for k in keys:
+            value = float(data_dict.get(k, 0))
+            
+            if not 1 <= value <= 4:
+                value = max(1, min(4, value))  
+            values.append(value)
+
+         
+        plt.figure(figsize=(10, 6), facecolor='#f7f7f7')
+        bars = plt.barh(display_labels, values, color='#17becf', edgecolor='black', linewidth=1.2)
+        plt.title(f'{employee_name} - Satisfaction Metrics', fontsize=18, fontweight='bold', pad=20)
+        plt.xlabel('Score (1-4)', fontsize=14)
+        plt.xlim(0, 4)
+        plt.yticks(fontsize=12)
+        plt.grid(axis='x', linestyle='--', alpha=0.5)
+        
+        
+        for bar in bars:
+            width = bar.get_width()
+            plt.text(width + 0.1, bar.get_y() + bar.get_height()/2, f"{width:.1f}", 
+                     va='center', ha='left', fontsize=10)
+        
+        # Save the chart
+        plt.tight_layout()
+        filepath = f'static/charts/{employee_name}/satisfaction_bar_chart.png'
+        os.makedirs(os.path.dirname(filepath), exist_ok=True)
+        plt.savefig(filepath, dpi=300, bbox_inches='tight')
+        plt.close()
+        
+        return filepath
+    
+    except Exception as e:
+         
+        print(f"Error in generate_satisfaction_bar_chart: {str(e)}")
+        return None   
+
+
 
 def generate_gauge_chart(prediction, employee_name):
     fig, ax = plt.subplots(figsize=(6, 4), facecolor='#f7f7f7')
@@ -119,7 +154,7 @@ def generate_categorical_bar_chart(data_dict, employee_name):
     values = [1 if data_dict.get(k) == 'Male' else 0 if k == 'Gender' else 1 if data_dict.get(k) == 'Yes' else 0 for k in keys]
     labels = ['Male' if values[0] == 1 else 'Female', 'Yes' if values[1] == 1 else 'No', 'Yes' if values[2] == 1 else 'No']
     bars = plt.bar(keys, values, color='#ff9999', edgecolor='black', linewidth=1.2)
-    plt.title(f'{employee_name} - Categorical Breakdown', fontsize=18, fontweight='bold', pad=20)
+    plt.title(f'{employee_name} - GENDER ,  OVERTIME  ,  ATTRITION ', fontsize=18, fontweight='bold', pad=20)
     plt.ylabel('Value (0 or 1)', fontsize=14)
     plt.xticks(ticks=range(len(keys)), labels=labels, fontsize=12)
     plt.grid(axis='y', linestyle='--', alpha=0.5)
@@ -173,7 +208,7 @@ def get_insights(prediction, data_dict):
     if not recommendations:
         recommendations.append("Maintain current performance and seek leadership opportunities.")
     
-    company_avg = 70  # Mocked
+    company_avg = 70  
     diff = prediction - company_avg
     comparison = f"Your score is {abs(diff):.1f}% {'higher' if diff > 0 else 'lower'} than the average {data_dict.get('EmpJobRole', 'Unknown')}."
 
@@ -198,6 +233,7 @@ def predict_performance(input_data_raw, model_name):
     scaled_input = feature_scaler.transform(input_df_encoded)
     model = model_rf if model_name == 'Random Forest' else model_xg
     return model.predict(scaled_input)[0]
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
