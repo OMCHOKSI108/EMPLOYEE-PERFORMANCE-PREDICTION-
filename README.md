@@ -4,7 +4,7 @@
 This project predicts employee performance ratings using machine learning models (Random Forest and XGBoost) based on various employee attributes. The application provides a Flask-based web interface to input employee details and visualize performance predictions with charts and insights.
 
 
-[Employee Performance Prediction App](https://employee-performance-prediction-production.up.railway.app/)
+[Employee Performance Prediction App](https://employee-yp79.onrender.com)
 
 ## Project Structure
 ```
